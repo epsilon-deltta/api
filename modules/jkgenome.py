@@ -747,7 +747,7 @@ def getRegionTypeUsingTransH(transH,gPos): # transH: individual transcript hash;
         raise Exception
 
 
-# nm_~ ,t_position
+# input : nm_~ ,t_position
 def convertTrans2Genome(transID,transPos,blatH=loadBlatOutputByID(),transLen=-1): # pos base-1
 
     result = []
@@ -775,7 +775,7 @@ def convertTrans2Genome(transID,transPos,blatH=loadBlatOutputByID(),transLen=-1)
 
     return result
 # 11:1234
-# transcript - position
+# output : transcript - position
 
 def convertGenome2Trans(chrNum,gPos,blatH_byChr=loadBlatOutputByChr() ): # genomic pos base1, transcript pos base0
 
@@ -1140,15 +1140,16 @@ def spliceAI_run(chrom,pos,ref,alt): # hg38, pos-1; indel exam: T to TA
 %s\t%s\t.\t%s\t%s\t.\t.\t.\n''' % (chrom,pos,ref,alt)
 
     import tempfile
-
-    f = tempfile.NamedTemporaryFile()
-    if int(sys.version[:1]) >= 3 :
-        f.write(vcf.encode()); f.flush()
-    else:
-        f.write(vcf); f.flush()
-    print("checking")
+    f = tempfile.NamedTemporaryFile(mode='w')
+    f.write(vcf); f.flush()
+        
     return os.popen("cat %s | spliceai -R %s/D/Sequences/hg38/hg38.fa -A grch38" % (f.name,homedir) ) .readlines()
 
+    # f = tempfile.NamedTemporaryFile()
+    # if int(sys.version[:1]) >= 3 :
+    #     f.write(vcf.encode()); f.flush()
+    # else:
+    #     f.write(vcf); f.flush()
 
 
 def variant_bi(chrNum,chrPos,strand,ref,alt,assembly='hg38',hexH4=False): # ref, alt: transcript base
@@ -1736,9 +1737,9 @@ class locus: # UCSC type
         return tuple(gL)
 
     def regionType(self,h=loadBlatOutputByChr()): 
-        return getRegionType(h,self)
+        return getRegionType(h,self) 
 
-
+    # 0base exclude ?
     def twoBitFrag(self, assembly='hg38', buffer5p=0, buffer3p=0):
         import platform as pl
         sep = os.path.sep
@@ -1751,7 +1752,7 @@ class locus: # UCSC type
         else:
             staPos = self.chrSta - buffer3p
             endPos = self.chrEnd + buffer5p
-        print('  chrom:',self.chrom,'  stapos: ',staPos,'  endpos: ',endPos)
+        # print('  chrom:',self.chrom,'  stapos: ',staPos,'  endpos: ',endPos)
         if pl.system().lower() =='windows':
             fragFile = os.popen
         else:            
@@ -1796,8 +1797,9 @@ def getRegionType(h,loc): # locusTupe = (chrom,sta,end) 1-base
 
                         offset = 0
 
-                        for s,e in t['cdsList']:
-                            offset += min(e,locT[1])-min(s,locT[1])
+                        for s_,e_ in t['cdsList']:
+                            offset += min(e_,locT[1])-min(s_,locT[1])
+
 
                         frame = (offset-1) % 3
 
@@ -1825,3 +1827,23 @@ def getRegionType(h,loc): # locusTupe = (chrom,sta,end) 1-base
             regions.append((t['transName'],t['transID'],'lnc', sense, -1))
 
     return list(set(regions))
+def convertTrans2Genome_transinfo(trans,transPos,transLen=-1):
+    result=[]
+
+    if '_' in trans['chrom']:
+        return None
+    if transLen ==-1:
+        transLen = trans['exnLen']
+
+    if trans['strand']=='-':
+        transPos = transLen - transPos + 1
+
+    tally = 1
+
+    for i,n in enumerate(trans['exnLenList']):
+
+        if tally <= transPos < tally+n:
+            result.append((trans['chrom'], trans['exnList'][i][0]+(transPos-tally)+1,trans['strand'])) # pos base-1
+            break
+        tally += n
+    return result

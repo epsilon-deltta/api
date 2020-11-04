@@ -12,8 +12,6 @@ def get_hexamer_track_info(seq='GCACCAAAGGAGGAAATCTGCCTGCATGATCCAATCACCTCCCATCAG
     if seq.count(',') == 3:
         seq = get_position_To_seq(seq)
 
-    # print("="*20,'\n',"="*20,'\n',"="*20,'\n',"="*20)
-    # print("this is seq :",seq)
     track_data        = jk.hexamer_track(seq)
     track_data['seq'] = seq
     fpath             = track_data['path']
@@ -28,6 +26,10 @@ def get_hexamer_track_info(seq='GCACCAAAGGAGGAAATCTGCCTGCATGATCCAATCACCTCCCATCAG
     del track_data['path']
     return track_data
 
+
+
+    wq
+
 def get_position_To_seq(seq="chr14,31549779,31549850,+"):
     arg   = seq.split(',')
     locus = jk.locus('%s:%s-%s%s' % tuple(arg))
@@ -40,9 +42,17 @@ def get_splice_ai(seq='11:108236168-108236168'):
     print("seq str is ",seq)
     seq = seq.rstrip()
     filter_sign = None 
-
+    # ctype,ptype
     if st.check_transID_Type(seq):
-        seq = st.get_transId2pos(seq)
+        
+        # NM_000552.4(VWF):p.Pro1266Gln
+        if st.check_transID_p_Type(seq) :
+            variants = st.get_transId_p2pos(seq)
+            return get_splice_ai_list(variants)
+            
+        # NM_000552.4(VWF):c.3797C>A
+        else :
+            seq = st.get_transId2pos(seq)
 
     if ' ' in seq:
         filter_sign = seq.split(' ')[1]

@@ -1,0 +1,64 @@
+./
+├── djg_api
+│   └── __pycache__
+├── dna
+│   ├── migrations
+│   └── __pycache__
+├── dna_api
+│   ├── migrations
+│   │   └── __pycache__
+│   └── __pycache__
+├── modules
+│   ├── data
+│   │   ├── BigFiles
+│   │   │   ├── primateAI
+│   │   │   └── SpliceAI
+│   │   ├── D
+│   │   │   └── Sequences
+│   │   │       └── hg38
+│   │   ├── Packages
+│   │   │   └── cell-2015
+│   │   │       └── results
+│   │   │           └── N4_Motif_Effect_Sizes
+│   │   │               ├── A3SS
+│   │   │               └── A5SS
+│   │   └── tools
+│   │       ├── jkent
+│   │       ├── maxentscan
+│   │       │   └── splicemodels
+│   │       └── tabix-0.2.6
+│   ├── dnatools
+│   │   └── __pycache__
+│   ├── jkgenome_test
+│   ├── output
+│   ├── __pycache__
+│   └── test
+│       └── __pycache__
+├── server-config
+├── static
+│   ├── admin
+│   │   ├── css
+│   │   │   └── vendor
+│   │   │       └── select2
+│   │   ├── fonts
+│   │   ├── img
+│   │   │   └── gis
+│   │   └── js
+│   │       ├── admin
+│   │       └── vendor
+│   │           ├── jquery
+│   │           ├── select2
+│   │           │   └── i18n
+│   │           └── xregexp
+│   └── rest_framework
+│       ├── css
+│       ├── docs
+│       │   ├── css
+│       │   ├── img
+│       │   └── js
+│       ├── fonts
+│       ├── img
+│       └── js
+└── tests
+
+61 directories
